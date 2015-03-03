@@ -106,6 +106,7 @@ def main():
   # Create bag structure and assign contact.
   bag = bagit.make_bag(resource_map_parser.get_resource_map_pid(), {'contact-name': 'test'})
 
+<<<<<<< HEAD
   # Create pid-mapping.txt file.
   # Fill with corresponding names.
   os.chdir(resource_map_parser.get_resource_map_pid())
@@ -129,6 +130,10 @@ def main():
   
   # Move into bag 
   os.chdir('data')
+=======
+  # Move into bag 
+  os.chdir(resource_map_parser.get_resource_map_pid() + '/data')
+>>>>>>> 13da99531944ac19e9849d479b02d32560ed90a9
 
   # Create file objects to fill our 'data'
   for pid in resource_map_parser.get_aggregated_pids():
