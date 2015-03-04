@@ -24,20 +24,21 @@
 ===================================
 
 :Synopsis:
-  This is an example on how to use the DataONE Client Library for Python. It
+  This is an example on how to use the DataONE Client Library to retrieve a data package on your system. It
   shows how to:
 
   - Download a Resource Map (Data Package)
-  - Parse and display the Resource Map.
+  - Parse and display the Resource Map on local system.
+  - Remove data package from system (commented out currently)
 
 :Author:
-  DataONE (Dahl)
+  USGS (Serna)
 
 :Created:
-  2013-03-04
+  2015-02-06
 
 :Requires:
-  - Python 2.6 or 2.7.
+  - Python 2.7
   - DataONE Common Library for Python (automatically installed as a dependency)
   - DataONE Client Library for Python (sudo pip install dataone.libclient)
 '''
@@ -50,6 +51,7 @@ import logging
 import os
 import sys
 import shutil
+import re
 
 # 3rd party.
 import pyxb
@@ -106,7 +108,7 @@ def main():
   # Create bag structure and assign contact.
   bag = bagit.make_bag(resource_map_parser.get_resource_map_pid(), {'contact-name': 'test'})
 
-<<<<<<< HEAD
+
   # Create pid-mapping.txt file.
   # Fill with corresponding names.
   os.chdir(resource_map_parser.get_resource_map_pid())
@@ -115,25 +117,27 @@ def main():
   for pid in resource_map_parser.get_aggregated_pids():
     myList = resource_map_parser.get_aggregated_pids()
 
+  # Loop through list to get total results. 
+  # First item for map needs PID, the rest are assigning new values mapped locally. 
+  # Regex to sort special characters for linux, win and osx. Replace with hyphen. 
   i = 0
   for instance in myList: 
     if i == 0:
-      writeVar = resource_map_parser.get_resource_map_pid() +' ' + 'ONEDrive\ Data\ Files/' + myList[i] +'\n'
-      outFile.write(writeVar)
+      writeVar = resource_map_parser.get_resource_map_pid() +' ' + 'ONEDrive_Data_Files/' + myList[i] +'\n'
+      formattedOutput = re.sub('[<>:"|?*&$;!(){}%^=]','-',writeVar)
+      outFile.write(formattedOutput)
       i += 1
     elif i <= len(myList) and i > 0:
-      writeBody = myList[i] +' ' + 'ONEDrive\ Data\ Files/' + myList[i] +'\n'
+      writeBody = myList[i] +' ' + 'ONEDrive_Data_Files/' + myList[i] +'\n'
+      formattedOutput = re.sub('[<>:"|?*&$;!(){}%^= ]','-',writeBody)
       outFile.write(writeBody)
       i += 1
  
   outFile.close()
   
+
   # Move into bag 
   os.chdir('data')
-=======
-  # Move into bag 
-  os.chdir(resource_map_parser.get_resource_map_pid() + '/data')
->>>>>>> 13da99531944ac19e9849d479b02d32560ed90a9
 
   # Create file objects to fill our 'data'
   for pid in resource_map_parser.get_aggregated_pids():
@@ -145,7 +149,7 @@ def main():
   myDirectorysParent = getParentDirectory(os.getcwd())
 
   os.chdir(myDirectorysParent)
-  os.rename("data", "ONEDrive Data Files")
+  os.rename("data", "ONEDrive_Data_Files")
 
   # Walk back up to package top level
   getParentDirectory(msg)
