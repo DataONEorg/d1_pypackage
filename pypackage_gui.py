@@ -44,6 +44,7 @@ from PIL import Image, ImageTk
 # DataOne.
 import d1_pypackage
 
+import fuse
 
 # Create window function, using grid layout
 def make_window(url):
@@ -73,8 +74,8 @@ def make_window(url):
     # Buttons
     # my_widget will invoke the run_data function container with the pid title parameter
     # del_data will invoke the data_delete function to remove the created directory
-    my_widget = Button(window, text='Collect data', command=lambda: d1_pypackage.run_data(pid_title.get()))
-    del_data = Button(window, text='Delete data collected', command=lambda: d1_pypackage.data_delete(pid_title.get()))
+    my_widget = Button(window, text='Collect data', command=lambda: d1_pypackage.example.run_data())
+    del_data = Button(window, text='Delete data collected', command=lambda: d1_pypackage.example.data_delete())
 
     # ONEDrive Logo
     logo = Image.open("onedrive_1.jpg")
@@ -85,9 +86,17 @@ def make_window(url):
     # Grid layout
     pid_title.grid(row=1, column=1, sticky=W)
     pid_url.grid(row=2, column=1, sticky=W)
-    my_widget.grid(row=3, column=0,sticky=W)
+    my_widget.grid(row=3, column=0, sticky=W)
     del_data.grid(row=3, column=1, sticky=W)
     logo_label.grid(row=0, column=0, sticky=W)
 
+
+    # Close function
+    def on_close():
+        fuse.sshfs_unmount()
+        window.destroy()
+
     # Run loop
     mainloop()
+
+    window.protocol('WM_DELETE_WINDOW', on_close())
